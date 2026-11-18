@@ -116,14 +116,15 @@ class Database {
                     str_contains($hostHttp, 'infinityfree') ||
                     str_contains($hostHttp, 'epizy') ||
                     str_contains($hostHttp, 'rf.gd') ||
+                    str_contains($hostHttp, 'free.nf') ||
                     str_contains($_SERVER['DOCUMENT_ROOT'] ?? '', 'if0_')
                 );
 
-                if ($isInfinityFree && ($host === '127.0.0.1' || $username === 'root')) {
-                    $host = 'sql313.infinityfree.com';
+                if ($isInfinityFree && ($host === '127.0.0.1' || $username === 'root' || $host === 'sql313.infinityfree.com' || $username === 'if0_43407213')) {
+                    $host = 'sql312.infinityfree.com';
                     $port = '3306';
-                    $dbname = 'if0_43407213_petalert';
-                    $username = 'if0_43407213';
+                    $dbname = 'if0_43477064_petalert';
+                    $username = 'if0_43477064';
                     $password = 'Robpri02';
                 }
             }
@@ -134,7 +135,7 @@ class Database {
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::ATTR_TIMEOUT => 3 // Timeout rápido para evitar travamentos
+                    PDO::ATTR_TIMEOUT => 7 // Timeout adequado para conexões em hospedagem compartilhada
                 ]);
             } catch (PDOException $e) {
                 // Se falhou e está no dev local, tenta 127.0.0.1 imediatamente

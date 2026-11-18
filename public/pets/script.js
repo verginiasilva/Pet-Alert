@@ -736,7 +736,7 @@ function iniciarPetsApp() {
         for (const urlRota of rotasPossiveis) {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
 
                 const res = await fetch(urlRota, {
                     headers: { 'Accept': 'application/json' },
