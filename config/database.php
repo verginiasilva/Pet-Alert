@@ -66,7 +66,7 @@ class Database {
                 $port = '3306';
                 $dbname = 'if0_43477064_petalert';
                 $username = 'if0_43477064';
-                $password = 'Robpri02';
+                $password = 'KBVNAgn8y7JJ2Y';
 
                 // 1. Suporte a string de conexão DATABASE_URL ou MYSQL_URL
                 $databaseUrl = getenv('DATABASE_URL') ?: (getenv('MYSQL_URL') ?: ($_ENV['DATABASE_URL'] ?? ($_ENV['MYSQL_URL'] ?? null)));
