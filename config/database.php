@@ -60,7 +60,14 @@ class Database {
                     }
                 }
             } else {
-                // Ambiente de Produção / Hospedagem Online (InfinityFree, Railway, etc.)
+                // Ambiente de Produção (InfinityFree / Nuvem)
+                // Credenciais oficiais do banco de dados na InfinityFree
+                $host = 'sql312.infinityfree.com';
+                $port = '3306';
+                $dbname = 'if0_43477064_petalert';
+                $username = 'if0_43477064';
+                $password = 'Robpri02';
+
                 // 1. Suporte a string de conexão DATABASE_URL ou MYSQL_URL
                 $databaseUrl = getenv('DATABASE_URL') ?: (getenv('MYSQL_URL') ?: ($_ENV['DATABASE_URL'] ?? ($_ENV['MYSQL_URL'] ?? null)));
                 if ($databaseUrl) {
@@ -108,24 +115,6 @@ class Database {
                             if ($k === 'DB_PASS' || $k === 'DB_PASSWORD' || $k === 'MYSQL_PASSWORD') $password = $v;
                         }
                     }
-                }
-
-                // 4. Detecção e fallback automático para InfinityFree
-                $isInfinityFree = (
-                    str_contains(__DIR__, 'if0_') || 
-                    str_contains($hostHttp, 'infinityfree') ||
-                    str_contains($hostHttp, 'epizy') ||
-                    str_contains($hostHttp, 'rf.gd') ||
-                    str_contains($hostHttp, 'free.nf') ||
-                    str_contains($_SERVER['DOCUMENT_ROOT'] ?? '', 'if0_')
-                );
-
-                if ($isInfinityFree && ($host === '127.0.0.1' || $username === 'root' || $host === 'sql313.infinityfree.com' || $username === 'if0_43407213')) {
-                    $host = 'sql312.infinityfree.com';
-                    $port = '3306';
-                    $dbname = 'if0_43477064_petalert';
-                    $username = 'if0_43477064';
-                    $password = 'Robpri02';
                 }
             }
 

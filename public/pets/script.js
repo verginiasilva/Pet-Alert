@@ -739,13 +739,18 @@ function iniciarPetsApp() {
                 const timeoutId = setTimeout(() => controller.abort(), 12000);
 
                 const res = await fetch(urlRota, {
+                    credentials: 'same-origin',
                     headers: { 'Accept': 'application/json' },
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
 
                 if (!res.ok) continue;
-                const data = await res.json();
+                const text = await res.text();
+                if (!text || text.trim().startsWith('<')) {
+                    continue;
+                }
+                const data = JSON.parse(text);
                 todosPets = Array.isArray(data) ? data : (data?.dados || []);
                 aplicarFiltrosCompletos();
                 carregou = true;
