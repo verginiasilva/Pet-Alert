@@ -127,15 +127,19 @@ class Database {
                     PDO::ATTR_TIMEOUT => 7 // Timeout adequado para conexões em hospedagem compartilhada
                 ]);
             } catch (PDOException $e) {
-                // Se falhou e está no dev local, tenta 127.0.0.1 imediatamente
-                if ($host !== '127.0.0.1') {
-                    $dsnLocal = "mysql:host=127.0.0.1;port=3306;dbname=petalert;charset=utf8mb4";
-                    self::$connection = new PDO($dsnLocal, 'root', '', [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false,
-                        PDO::ATTR_TIMEOUT => 3
-                    ]);
+                // Se falhou e está no dev local, tenta 127.0.0.1 com segurança
+                if ($isLocalDev && $host !== '127.0.0.1') {
+                    try {
+                        $dsnLocal = "mysql:host=127.0.0.1;port=3306;dbname=petalert;charset=utf8mb4";
+                        self::$connection = new PDO($dsnLocal, 'root', '', [
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                            PDO::ATTR_EMULATE_PREPARES => false,
+                            PDO::ATTR_TIMEOUT => 3
+                        ]);
+                    } catch (PDOException $eLocal) {
+                        throw $e;
+                    }
                 } else {
                     throw $e;
                 }

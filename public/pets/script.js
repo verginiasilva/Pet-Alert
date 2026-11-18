@@ -728,10 +728,11 @@ function iniciarPetsApp() {
         const rotasPossiveis = [
             `../index.php?rota=pets&_t=${Date.now()}`,
             `../../index.php?rota=pets&_t=${Date.now()}`,
-            `../public/index.php?rota=pets&_t=${Date.now()}`
+            `/index.php?rota=pets&_t=${Date.now()}`
         ];
 
         let carregou = false;
+        let ultimoErroMsg = '';
 
         for (const urlRota of rotasPossiveis) {
             try {
@@ -745,8 +746,21 @@ function iniciarPetsApp() {
                 });
                 clearTimeout(timeoutId);
 
-                if (!res.ok) continue;
                 const text = await res.text();
+
+                if (!res.ok) {
+                    try {
+                        const errJson = JSON.parse(text);
+                        if (errJson && errJson.mensagem) {
+                            ultimoErroMsg = errJson.mensagem;
+                            console.error('Erro na API:', errJson.mensagem);
+                        }
+                    } catch (pe) {
+                        console.error(`HTTP ${res.status}:`, text.substring(0, 150));
+                    }
+                    continue;
+                }
+
                 if (!text || text.trim().startsWith('<')) {
                     continue;
                 }
@@ -756,7 +770,7 @@ function iniciarPetsApp() {
                 carregou = true;
                 break;
             } catch (e) {
-                // Tenta próxima rota
+                console.warn('Falha na requisição:', urlRota, e);
             }
         }
 
@@ -769,11 +783,16 @@ function iniciarPetsApp() {
 
             container.innerHTML = `
                 <div class="empty-state" style="color: #b91c1c;">
-                    <h3>Não foi possível conectar ao banco de dados</h3>
-                    <p>O servidor demorou para responder ou a conexão oscilou.</p>
-                    <button type="button" class="primary-btn" id="btnTentarNovamentePets" style="margin-top:1rem; padding:0.65rem 1.4rem;">
-                        🔄 Tentar Novamente
-                    </button>
+                    <h3>Não foi possível carregar os animais do banco de dados</h3>
+                    <p>${ultimoErroMsg ? escapeHtml(ultimoErroMsg) : 'O servidor demorou para responder ou houve uma falha de conexão.'}</p>
+                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:1rem;">
+                        <button type="button" class="primary-btn" id="btnTentarNovamentePets" style="padding:0.65rem 1.4rem;">
+                            🔄 Tentar Novamente
+                        </button>
+                        <a href="../diagnostico.php" target="_blank" class="secondary-btn" style="text-decoration:none; padding:0.65rem 1.4rem; display:inline-flex; align-items:center;">
+                            🛠️ Testar Diagnóstico
+                        </a>
+                    </div>
                 </div>
             `;
             const btnRetry = document.getElementById('btnTentarNovamentePets');
