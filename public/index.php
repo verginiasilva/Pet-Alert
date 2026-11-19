@@ -36,50 +36,46 @@ if ($rota === '') {
     exit();
 }
 
-switch ($rota) {
+// Mapeamento de rotas para arquivos
+$rotasMap = [
+    'pets'           => 'routes/pets_api.php',
+    'usuarios'       => 'routes/usuarios.php',
+    'auth'           => 'routes/auth.php',
+    'veterinarios'   => 'routes/veterinarios.php',
+    'doacao_pet'     => 'routes/doacao_pet.php',
+    'doacao_dinheiro'=> 'routes/doacao_dinheiro.php',
+    'denuncias'      => 'routes/denuncias.php',
+    'chat'           => 'routes/chat.php',
+    'ia'             => 'routes/ia.php',
+    'admin'          => 'routes/admin.php',
+];
 
-    case 'pets':
-        require __DIR__ . '/../routes/pets_api.php';
-        break;
+if (!isset($rotasMap[$rota])) {
+    http_response_code(404);
+    echo json_encode(["status" => "erro", "mensagem" => "Rota não encontrada: {$rota}"]);
+    exit();
+}
 
-    case 'usuarios':
-        require __DIR__ . '/../routes/usuarios.php';
-        break;
+// Detectar a raiz do projeto de forma robusta
+// Funciona tanto com estrutura normal (htdocs/public/index.php -> htdocs/routes/)
+// quanto após extrações parciais no InfinityFree
+$projectRoot = dirname(__DIR__);
+$routeFile = $projectRoot . '/' . $rotasMap[$rota];
 
-    case 'auth':
-        require __DIR__ . '/../routes/auth.php';
-        break;
-
-    case 'veterinarios':
-        require __DIR__ . '/../routes/veterinarios.php';
-        break;
-
-    case 'doacao_pet':
-        require __DIR__ . '/../routes/doacao_pet.php';
-        break;
-
-    case 'doacao_dinheiro':
-        require __DIR__ . '/../routes/doacao_dinheiro.php';
-        break;
-
-    case 'denuncias':
-        require __DIR__ . '/../routes/denuncias.php';
-        break;
-
-    case 'chat':
-        require __DIR__ . '/../routes/chat.php';
-        break;
-
-    case 'ia':
-        require __DIR__ . '/../routes/ia.php';
-        break;
-
-    case 'admin':
-        require __DIR__ . '/../routes/admin.php';
-        break;
-
-    default:
+try {
+    if (!file_exists($routeFile)) {
+        http_response_code(500);
         echo json_encode([
-            "erro" => "Rota não encontrada"
+            "status" => "erro",
+            "mensagem" => "Arquivo de rota não encontrado no servidor. Verifique se todos os arquivos foram enviados corretamente para o htdocs. Arquivo esperado: " . basename($rotasMap[$rota])
         ]);
+        exit();
+    }
+    require $routeFile;
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode([
+        "status" => "erro",
+        "mensagem" => "Erro interno no servidor: " . $e->getMessage()
+    ]);
 }
