@@ -2,9 +2,13 @@
  * PetAlert - Controle Global de Interface de Autenticação e Navegação
  * Gerencia a visibilidade do botão 'Entrar', identificação do usuário logado e logout.
  * Suporta execução tanto na raiz (/index.html) quanto em subdiretórios (/public/...).
+ * Compatível com InfinityFree: detecta se está em subpasta /public/ ou na raiz.
  */
 document.addEventListener('DOMContentLoaded', () => {
-    const isRootPage = !window.location.pathname.includes('/public/');
+    // No InfinityFree a estrutura é: /htdocs/index.html (raiz) e /htdocs/public/pagina/index.html
+    // Detecta se a página atual está dentro de /public/ na URL
+    const path = window.location.pathname;
+    const isRootPage = !path.includes('/public/');
     const pathPrefix = isRootPage ? 'public/' : '../';
 
     const obterUsuario = () => {

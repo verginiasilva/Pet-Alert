@@ -1,6 +1,8 @@
-<?php
+﻿<?php
 /**
- * PetAlert - Ponto de Entrada da Raiz
+ * PetAlert - Ponto de Entrada da Raiz (InfinityFree)
+ * No InfinityFree, este arquivo fica em /htdocs/index.php
+ * As páginas públicas ficam em /htdocs/public/...
  */
 
 // Se for requisição de API com parâmetro de rota, encaminha para o dispatcher principal
@@ -11,11 +13,7 @@ if (!empty($_GET['rota'])) {
 
 // Se a landing page existe, redireciona o visitante para a página inicial
 if (file_exists(__DIR__ . '/public/inicio/index.html')) {
-    $target = 'public/inicio/index.html';
-    if (!empty($_SERVER['QUERY_STRING'])) {
-        $target .= '?' . $_SERVER['QUERY_STRING'];
-    }
-    header("Location: {$target}", true, 302);
+    header("Location: public/inicio/index.html", true, 302);
     exit;
 }
 

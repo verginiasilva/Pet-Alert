@@ -5,7 +5,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const isRootPage = !window.location.pathname.includes('/public/inicio/');
+    // No InfinityFree: /htdocs/public/inicio/index.html => URL tem /public/inicio/
+    // Na raiz: /htdocs/index.html => URL NÃO tem /public/
+    const isRootPage = !window.location.pathname.includes('/public/');
     const pathPrefix = isRootPage ? 'public/' : '../';
 
     // 1. Tratamento de mensagens de feedback de sessão (logout / exclusão de conta)
