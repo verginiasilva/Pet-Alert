@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * PetAlert - Ponto de Entrada da Raiz (InfinityFree)
  * No InfinityFree, este arquivo fica em /htdocs/index.php
